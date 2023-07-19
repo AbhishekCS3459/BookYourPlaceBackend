@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: "https://bookyourplace.onrender.com",
+    origin: "https://book-your-place-azure.vercel.app",
   })
 );
 app.use(cookieParser());
