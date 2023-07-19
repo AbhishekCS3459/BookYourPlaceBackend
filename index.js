@@ -39,7 +39,7 @@ function getUserDataFromReq(req) {
 }
 
 app.get("/test", (req, res) => {
-  res.json("Test Ok");
+  res.json("Test Ok originchanged");
 });
 
 app.post("/register", async (req, res) => {
