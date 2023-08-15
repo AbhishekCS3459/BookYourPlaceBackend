@@ -20,9 +20,10 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: "https://book-your-place-azure.vercel.app",
+    origin: ["https://book-your-place-azure.vercel.app", "http://localhost:5173/"],
   })
 );
+
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 mongoose.connect(process.env.MONGOURL).then(() => {
@@ -39,7 +40,7 @@ function getUserDataFromReq(req) {
 }
 
 app.get("/test", (req, res) => {
-  res.json("Test Ok originchanged");
+  res.json("Test Ok originchanged and modified");
 });
 
 app.post("/register", async (req, res) => {
