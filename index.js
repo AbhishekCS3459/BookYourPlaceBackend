@@ -93,9 +93,9 @@ app.post("/login", async (req, res) => {
         {},
         (err, token) => {
           if (err) throw err;
-             userDoc.token = token; // Add the token property to the userDoc object
-             res.cookie("token", token).json(userDoc);
-               // res.cookie("token", token).json({ token, userDoc });
+             // userDoc.token = token; // Add the token property to the userDoc object
+             // res.cookie("token", token).json(userDoc);
+               res.cookie("token", token).json({ token, userDoc });
 
         }
       );
