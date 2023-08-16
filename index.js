@@ -17,12 +17,28 @@ const { log } = require("console");
 const port=process.env.PORT || 4000
 require("dotenv").config();
 app.use(express.json());
-app.use(
-  cors({
-    credentials: true,
-    origin: ["https://book-your-place-azure.vercel.app", "http://localhost:5173/"],
-  })
-);
+const corsOptions = {
+  credentials: true,
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://book-your-place-azure.vercel.app",
+      // Add more allowed origins here if needed
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error("Blocked origin:", origin); // Log the blocked origin
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
+};
+
+// Use the CORS policy
+app.use(cors(corsOptions));
+
 
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
