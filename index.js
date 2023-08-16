@@ -45,25 +45,50 @@ mongoose.connect(process.env.MONGOURL).then(() => {
   console.log("Connected to db");
 }).catch(err=>console.log("error:",err))
 
-
-  const getUserDataFromReq = async (req) => {
-    const token = req.cookies.token;
+//github version getUserDataFromReq
+  // const getUserDataFromReq = async (req) => {
+  //   const token = req.cookies.token;
   
-    if (!token) {
-      console.log("token not present")
+  //   if (!token) {
+  //     console.log("token not present")
+  //     return null; // Return null or handle unauthorized case as needed
+  //   }
+  
+  //   try {
+  //     const decoded = jwt.verify(token, jwtSecret);
+  //     const user = await User.findById(decoded.sub);
+  //     return user;
+  //   } catch (error) {
+  //     console.error("JWT Verification Error:", error);
+  //     return null; // Return null or handle the error case as needed
+  //   }
+  // };
+  const getUserDataFromReq = async (req) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
       return null; // Return null or handle unauthorized case as needed
     }
   
+    const token = authHeader.split(" ")[1]; // Get the token from "Bearer <token>"
+  
     try {
       const decoded = jwt.verify(token, jwtSecret);
-      const user = await User.findById(decoded.sub);
+      console.log("decoded:", decoded);
+  
+      const userIdFromToken = decoded.id;
+  
+      const user = await User.findOne({ _id: userIdFromToken });
+
       return user;
     } catch (error) {
       console.error("JWT Verification Error:", error);
       return null; // Return null or handle the error case as needed
     }
   };
-app.get("/test", (req, res) => {
+
+  
+
+  app.get("/test", (req, res) => {
   res.json("Test Ok originchanged and modified token");
 });
 
