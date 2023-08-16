@@ -45,15 +45,23 @@ mongoose.connect(process.env.MONGOURL).then(() => {
   console.log("Connected to db");
 }).catch(err=>console.log("error:",err))
 
-function getUserDataFromReq(req) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
-      if (err) reject(err);
-      resolve(userData);
-    });
-  });
-}
 
+  const getUserDataFromReq = async (req) => {
+    const token = req.cookies.token;
+  
+    if (!token) {
+      return null; // Return null or handle unauthorized case as needed
+    }
+  
+    try {
+      const decoded = jwt.verify(token, jwtSecret);
+      const user = await User.findById(decoded.sub);
+      return user;
+    } catch (error) {
+      console.error("JWT Verification Error:", error);
+      return null; // Return null or handle the error case as needed
+    }
+  };
 app.get("/test", (req, res) => {
   res.json("Test Ok originchanged and modified");
 });
