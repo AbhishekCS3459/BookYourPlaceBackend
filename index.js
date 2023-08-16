@@ -64,7 +64,7 @@ mongoose.connect(process.env.MONGOURL).then(() => {
     }
   };
 app.get("/test", (req, res) => {
-  res.json("Test Ok originchanged and modified");
+  res.json("Test Ok originchanged and modified token");
 });
 
 app.post("/register", async (req, res) => {
@@ -288,36 +288,41 @@ app.get("/myplaces", async (req, res) => {
   });
 });
 
-//Place page form booking
 app.post("/bookings", async (req, res) => {
-  const userData = await getUserDataFromReq(req);
-  const {
-    place,
-    checkIn,
-    checkOut,
-    numberOfGuests,
-    name,
-    phone,
-    price,
-    address,
-  } = req.body;
-  Booking.create({
-    place,
-    checkIn,
-    checkOut,
-    numberOfGuests,
-    name,
-    phone,
-    price,
-    user: userData.id,
-    address,
-  })
-    .then((doc) => {
-      res.json(doc);
-    })
-    .catch((err) => {
-      throw err;
+  try {
+    const userData = await getUserDataFromReq(req);
+    if (!userData) {
+      return res.status(401).json("Unauthorized");
+    }
+
+    const {
+      place,
+      checkIn,
+      checkOut,
+      numberOfGuests,
+      name,
+      phone,
+      price,
+      address,
+    } = req.body;
+
+    const booking = await Booking.create({
+      place,
+      checkIn,
+      checkOut,
+      numberOfGuests,
+      name,
+      phone,
+      price,
+      user: userData.id,
+      address,
     });
+
+    res.json(booking);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Internal Server Error");
+  }
 });
 
 app.get("/bookings", async (req, res) => {
@@ -330,6 +335,7 @@ app.get("/bookings", async (req, res) => {
     const bookings = await Booking.find({ user: userData.id }).populate(
       "place"
     );
+
     res.json(bookings);
   } catch (error) {
     console.error(error);
