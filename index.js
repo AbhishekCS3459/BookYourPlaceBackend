@@ -26,7 +26,7 @@ const corsOptions = {
       // Add more allowed origins here if needed
     ];
 
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       console.error("Blocked origin:", origin); // Log the blocked origin
@@ -35,7 +35,6 @@ const corsOptions = {
   },
   methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
 };
-
 // Use the CORS policy
 app.use(cors(corsOptions));
 
