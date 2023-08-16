@@ -50,6 +50,7 @@ mongoose.connect(process.env.MONGOURL).then(() => {
     const token = req.cookies.token;
   
     if (!token) {
+      console.log("token not present")
       return null; // Return null or handle unauthorized case as needed
     }
   
